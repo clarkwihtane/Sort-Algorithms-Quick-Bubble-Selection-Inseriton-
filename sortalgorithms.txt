@@ -1,0 +1,141 @@
+//Sorting Algorithn Compare
+#include<iostream>
+#include<time.h>
+#include<stdlib.h>
+#include<iomanip>
+#include<math.h>
+
+using namespace std;
+template<class S> void SelectionSort(S[], long);
+template<class B> void BubbleSort(B[], long);
+template<class I> void InsertionSort(I[], long);
+template<class Q> void QuickSort(Q[], long, long);
+
+//Main Program--------------------------------------------------------------------
+
+int main()
+{
+	long a[100000], step = 50, p, r, i;
+	clock_t start, finish;
+	double table[29][5];
+	int rw = 0, cl = 0; //rw=raw index, cl=column index
+	string sp = "     ", b1 = "        ", b2 = "          ", b3 = "             ";
+	//Generate random....
+	srand(time(NULL));
+	for (i = 0; i < 100000; i++)
+	{ a[i] = rand() % 100000; }
+	cout << "> Generate complated" << endl;
+	cout << "> Starting test..." << endl;
+	//Testing sorting algorithm........
+	cout << "________________________________________________________________________" << endl;
+	cout << "Input Value | InsertionSort | SelectionSort  | BubbleSort  | QuickSort " << endl;
+	cout << "    (n)     |    (second)   |    (second)    |   (second)  |  (second) " << endl;
+	cout << "________________________________________________________________________" << endl;
+	for (long n = 50; n <= 100000; n+= step)
+	{
+		start = clock(); InsertionSort(a, n); finish = clock();
+		table[rw][cl] = (finish - start) / (double)CLK_TCK; cl++;
+		//--------------------------------------------------------------------
+		start = clock(); SelectionSort(a, n); finish = clock();
+		table[rw][cl] = (finish - start) / (double)CLK_TCK; cl++;
+		//--------------------------------------------------------------------
+		start = clock(); BubbleSort(a, n); finish = clock();
+		table[rw][cl] = (finish - start) / (double)CLK_TCK; cl++;
+		//--------------------------------------------------------------------
+		start = clock(); QuickSort(a, 0, n - 1); finish = clock();
+		table[rw][cl] = (finish - start) / (double)CLK_TCK; cl++;
+		//-----------------------------------------------------------
+
+		cout << sp << n << " n" << b1 << fixed << setprecision(3) << table[rw][0] << b2 << setprecision(3);
+		cout << table[rw][1] << b3 << setprecision(3) << table[rw][2] << "\t\t" << setprecision(3);
+		if (table[rw][3] == -1) { cout << "----";} else { cout << table[rw][3]; }
+		cout << "\t\t" << setprecision(3) <<  endl;
+
+		if (n == 50) sp = "    "; if (n == 100) step = 100; if (n == 900) sp = "   "; if (n == 1000) step = 1000;
+		if (n == 9000) sp = "  "; if (n == 10000) step = 10000;
+		if (n == 50000) { sp = " "; b1 = "       "; b2 = "         "; b3 = "           "; step = 50000;	}
+		if (n == 100000) { b3 = "            "; step = 100000; }
+		cl = 0;
+		rw++;
+	}
+	cout << "_______________________________________________________________________________________________________" << endl;
+	cout << "> Test completed." << endl;
+	system("pause");
+	return 0;
+}
+//Selection Sort Function 
+template<class S>
+void SelectionSort(S a[], long size)
+{
+	long i, j, min, key;
+	for (i = 0; i < size - 2; i++)
+	{
+		min = i;
+		for (j = i + 1; j < size - 1; j++)
+		{
+			if (a[j] < a[min])
+				min = j;
+		}
+		key = a[i];
+		a[i] = a[min];
+		a[min] = key;
+	}
+}
+//Bubble Sort Function
+template<class B>
+void BubbleSort(B a[], long size)
+{
+	long i, j, key;
+	for (i = 0; i < size - 2; i++)
+		for (j = 0; j < size - i - 2; j++)
+			if (a[j] > a[j + 1])
+			{
+				key = a[j];
+				a[j] = a[j + 1];
+				a[j + 1] = key;
+			}
+}
+//Insortion Sort Function
+template<class I>
+void InsertionSort(I A[], long size)
+{
+	for (long i = 1; i < size - 1; i++)
+	{
+		I t = A[i];
+		long j;
+		for (j = i - 1; j >= 0 && t < A[j]; j--)
+			A[j + 1] = A[j];
+		A[j + 1] = t;
+	}
+}
+//Quick Sort Function 
+template<class Q>
+void QuickSort(Q a[], long left, long right)
+{
+	long i = left, j = right;
+	long tmp;
+	long pivot = a[(left + right) / 2];
+	/* partition */
+	while (i <= j)
+	{
+		while (a[i] < pivot)
+			i++;
+		while (a[j] > pivot)
+			j--;
+		if (i <= j)
+		{
+			tmp = a[i];
+			a[i] = a[j];
+			a[j] = tmp;
+			i++;
+			j--;
+		}
+	};
+	/* recursion */
+	if (left < j)
+		QuickSort(a, left, j);
+	if (i < right)
+		QuickSort(a, i, right);
+}
+
+
